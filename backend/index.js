@@ -1,15 +1,38 @@
 const express = require('express');
 const app = express();
 const fetchUrl = require("fetch").fetchUrl;
+const puppeteer = require('puppeteer');
+
+
+async function scrapeBitcoin() {
+   const browser = await puppeteer.launch();
+   const page = await browser.newPage();
+   await page.goto('https://bitcoin.info/');
+
+   await page.waitForXPath('//*[@id="data-hover"]/td[4]');
+   let elHandle = await page.$x('//*[@id="data-hover"]/td[4]');
+  0 //const src = await elHandle.getProperty('src');
+   let lamudiNewPropertyCount = await page.evaluate(el => el.textContent, elHandle[0]);
+
+    console.log('Total Property Number is:', lamudiNewPropertyCount);
+
+    // close the browser
+    await browser.close();
+}
+
+scrapeBitcoin()
+//*[@id="data-hover"]/td[4]
+//document.querySelector("#data-hover > td:nth-child(5)")
+
 
 // source file is iso-8859-15 but it is converted to utf-8 automatically
-fetchUrl("https://bitcoin.info/", function(error, meta, body){
-   let html = body.toString();
+// fetchUrl("https://bitcoin.info/", function(error, meta, body){
+//    let html = body.toString();
    
-   let htmlProcessado = html.match(/(?<=\<td>).*(?=\<\/td>)/);
+//    let htmlProcessado = html.match(/(?<=\<td>).*(?=\<\/td>)/);
 
-   console.log(html);
-});
+//    //console.log(html);
+// });
 
 
 
@@ -61,3 +84,16 @@ app.get('/', (req, res) => {
 // 	});
 
 
+// async function scrapeBitcoin() {
+//    const browser = await puppeteer.launch();
+//    const page = await browser.newPage();
+//    await page.goto('https://bitcoin.info/');
+//    const [el] = await page.$x('//*[@id="data-hover"]/td[4]');
+//    const src = await el.getProperty('src');
+//    const srcTxt = await src.jsonValue();
+
+//    console.log(srcTxt);
+//    //console.log({srcTxt});
+// }
+
+// scrapeBitcoin()
