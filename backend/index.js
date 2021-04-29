@@ -17,26 +17,12 @@ let bitcoinPrice = async function() {
    let elHandle = await page.$x('//*[@id="export-chart-element"]/div/section/div[1]/div[1]/div[2]/div');
    let priceString = await page.evaluate(el => el.textContent, elHandle[0]);
    let priceNumber = await Number( priceString.replace(/[^0-9.-]+/g,"") );
-   //console.log(priceNumber);
-   //console.log('Bitcoin Price:', Number( bitcoinPrice.replace(/[^0-9.-]+/g,"") ) );
+
    bitcoin = priceNumber;
    await browser.close();
-   return await priceNumber;
+   return priceNumber;
 }
 
-//bitcoinPrice();
-
-console.log(bitcoin);
-
-cron.schedule('*/20 * * * * *', function() {
-
-   bitcoinPrice();   
-   // let bitcoinPrice = (() => scrapeBitcoin());
-   console.log(bitcoin);
-
-});
-
-//console.log(bitcoinPrice);
 
 const url = 'mongodb://127.0.0.1:27017/scraper';
 mongoose.connect(url, { useNewUrlParser: true });
@@ -48,6 +34,24 @@ const db = mongoose.connection
    console.error('Database connection error:', err)
 })
 
+const schema = new mongoose.Schema({ name: 'string', size: 'string' }, { timestamps: true });
+const Tank = mongoose.model('Tank', schema);
+
+cron.schedule('*/20 * * * * *', function() {
+
+   bitcoinPrice();   
+   console.log(bitcoin);
+   const small = new Tank({ size: 'small' });
+   small.save(function (err) {
+      if (err) return handleError(err);
+      // saved!
+   });
+
+});
+
+
+
+
 
 
 app.get('/', function (req, res) {
@@ -58,6 +62,11 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
    res.send('POST request to the homepage')
 })
+
+app.get('/bitcoin', function (req, res) {
+   res.send('BITCOIN homepage')
+})
+ 
 
 app.listen(3000, () => {
    console.log(`Express Server is running`)
