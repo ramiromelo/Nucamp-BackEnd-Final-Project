@@ -9,7 +9,7 @@ async function scrapeBitcoin() {
    await page.waitForXPath('//*[@id="export-chart-element"]/div/section/div[1]/div[1]/div[2]/div');
    let elHandle = await page.$x('//*[@id="export-chart-element"]/div/section/div[1]/div[1]/div[2]/div');
    let bitcoinPrice = await page.evaluate(el => el.textContent, elHandle[0]);
-   console.log('Bitcoin Price:', Number( bitcoinPrice.replace(/[^0-9.-]+/g,"") ) );
+   //console.log('Bitcoin Price:', Number( bitcoinPrice.replace(/[^0-9.-]+/g,"") ) );
    await browser.close();
    return bitcoinPrice;
 }
