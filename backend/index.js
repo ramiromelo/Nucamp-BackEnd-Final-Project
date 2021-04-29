@@ -13,6 +13,14 @@ fetchUrl("https://bitcoin.info/", function(error, meta, body){
 
 
 
+app.get('/', (req, res) => {
+   res.send('Hello World 4!')
+ });
+ 
+ app.listen(3000, () => {
+   console.log(`Express Server is running`)
+ });
+
 
 
 // const axios = require("axios")
@@ -53,11 +61,3 @@ fetchUrl("https://bitcoin.info/", function(error, meta, body){
 // 	});
 
 
-
-app.get('/', (req, res) => {
-  res.send('Hello World 4!')
-});
-
-app.listen(3000, () => {
-  console.log(`Express Server is running`)
-});
