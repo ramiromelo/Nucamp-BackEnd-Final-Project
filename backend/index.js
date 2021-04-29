@@ -24,7 +24,9 @@ let bitcoinPrice = async function() {
 }
 
 
-const url = 'mongodb://127.0.0.1:27017/scraper';
+//const url = 'mongodb://127.0.0.1:27017/scraper';
+const url = 'mongodb+srv://nucamp:nucamp@cluster0.csenz.mongodb.net/scraper?retryWrites=true&w=majority';
+
 mongoose.connect(url, { useNewUrlParser: true });
 const db = mongoose.connection
    db.once('open', _ => {
@@ -34,18 +36,21 @@ const db = mongoose.connection
    console.error('Database connection error:', err)
 })
 
-const schema = new mongoose.Schema({ name: 'string', size: 'string' }, { timestamps: true });
-const Tank = mongoose.model('Tank', schema);
+const schema = new mongoose.Schema({ price: 'number' }, { timestamps: true });
+const Bitcoin = mongoose.model('Bitcoin', schema);
 
 cron.schedule('*/20 * * * * *', function() {
 
    bitcoinPrice();   
    console.log(bitcoin);
-   const small = new Tank({ size: 'small' });
-   small.save(function (err) {
-      if (err) return handleError(err);
-      // saved!
-   });
+   const small = new Bitcoin({ price: bitcoin });
+
+   if(!!bitcoin) {
+      small.save(function (err) {
+         if (err) return handleError(err);
+         // saved!
+      });
+   }
 
 });
 
